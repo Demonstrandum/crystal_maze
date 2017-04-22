@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'knutsen@jetspace.co'
   s.files       = ["lib/A*.rb"]
   s.homepage    = 'https://github.com/Demonstrandum/A*'
-  s.license     = 'GNU GPL v3'
+  s.license     = 'GPL-3.0'
 end
