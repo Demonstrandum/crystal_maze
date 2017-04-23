@@ -51,6 +51,7 @@ class Astar
     @maze = maze
     @start = start
     @dest = dest
+    @solvedMaze = @maze
     ###puts @start[0]
 
     @firstNode = node start[0], start[1], -1, -1, -1, -1 # [x, y, index, startCost, destcost, totalCost]
@@ -61,27 +62,11 @@ class Astar
     @perimiter    = (2 * @width) + (2 * @height)
     @area = @width * @height
 
-    @unvisited = []
+    @unvisited = [@firstNode]
     @visited  = []
-    @unvisited << @firstNode
-    @unvisited << @destNode
   end
 
   def solve
-
-
-
-
-    # (1..@width - 1).each do |x|
-    #   (1..@height - 1).each do |y|
-    #     red = ChunkyPNG::Color.r(@maze[x, y])
-    #     green = ChunkyPNG::Color.g(@maze[x, y])
-    #     blue = ChunkyPNG::Color.b(@maze[x, y])
-    #     if red > 255/2 && green > 255/2 && blue > 255/2
-    #       solvedMaze[x, y] = ChunkyPNG::Color.from_hex startColour
-    #     end
-    #   end
-    # end
 
     while @unvisited.length > 0 do
       minIndex = 0
@@ -101,6 +86,7 @@ class Astar
           here = @visited[here[2]]
           path.unshift here
         end
+        puts "foud path!:\n" + path.to_s
         return path
       end
 
@@ -161,7 +147,16 @@ class Astar
   end
 
   def passable? x, y
-    return true
+    if x < 0 || y < 0 then
+      return false
+    end
+    red = ChunkyPNG::Color.r(@maze[x, y])
+    green = ChunkyPNG::Color.g(@maze[x, y])
+    blue = ChunkyPNG::Color.b(@maze[x, y])
+    if red > 255/2 && green > 255/2 && blue > 255/2
+      return true
+    end
+    return false
   end
 
   def direction here, destination
@@ -189,30 +184,26 @@ class Astar
   end
 
   def draw
-    solvedMaze = @maze
     startColour = "#9a5cff"
-    destColour  = "#e67777"
-    solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-    solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
+    destColour  = "#55ff66"
+    @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
+    @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
     path = solve
     puts path.to_s
     path.each do |i|
+      # Reconstructed path drawn on to new image...
     end
 
     mazeName = ARGV[ARGV.length - 1]
     mazeLabel = (mazeName.split /\s|\./)[0]
     mazeFileType = "." + (mazeName.split /\s|\./)[1]
-    solvedMaze.save(mazeLabel + "-solved" + mazeFileType)
+    @solvedMaze.save(mazeLabel + "-solved" + mazeFileType)
   end
-
-
-
 end
 
 unless image.nil?
   loc = FromTo.new image
   init = Astar.new image, loc.findStart, loc.findEnd
   draw = init.draw
-
 end
