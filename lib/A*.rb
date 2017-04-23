@@ -40,17 +40,22 @@ class FromTo
   end
 end
 
+def node x, y, index, cost, destCost, totalCost
+  return [x, y, index, cost, destCost, totalCost]
+end
+
 class Astar
   def initialize maze, start, dest
     raise "Either start, end or both locations not found!" if start.empty? || dest.empty?
-    puts start.to_s + ", " + dest.to_s # REMOVE ME, testing only.
+    ###puts start.to_s + ", " + dest.to_s # REMOVE ME, testing only.
     @maze = maze
     @start = start
     @dest = dest
-    puts @start[0]
+    ###puts @start[0]
 
-    #@firstNode = Node.new start[0], start[1], -1, -1, -1, -1)
-    #@destNode  = Node.new dest[0], dest[1], -1, -1, -1, -1)
+    @firstNode = node start[0], start[1], -1, -1, -1, -1 # [x, y, index, startCost, destcost, totalCost]
+    @destNode  = node dest[0], dest[1],   -1, -1, -1, -1
+
     @height       = maze.dimension.height
     @width        = maze.dimension.width
     @perimiter    = (2 * @width) + (2 * @height)
@@ -58,38 +63,89 @@ class Astar
 
     @unvisited = []
     @visited  = []
-    #@unvisited.push @firstNode
-
-    puts @nodeList.to_s + "\n" + @nodeList.length.to_s###########
+    @unvisited << @firstNode
+    @unvisited << @destNode
   end
 
   def solve
-    solvedMaze = @maze
-    startColour = "#6414e6"
-    destColour  = "#e67777"
-    solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-    solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
 
 
 
-    (1..@width - 1).each do |x|
-      (1..@height - 1).each do |y|
-        red = ChunkyPNG::Color.r(@maze[x, y])
-        green = ChunkyPNG::Color.g(@maze[x, y])
-        blue = ChunkyPNG::Color.b(@maze[x, y])
-        if red > 255/2 && green > 255/2 && blue > 255/2
+    # (1..@width - 1).each do |x|
+    #   (1..@height - 1).each do |y|
+    #     red = ChunkyPNG::Color.r(@maze[x, y])
+    #     green = ChunkyPNG::Color.g(@maze[x, y])
+    #     blue = ChunkyPNG::Color.b(@maze[x, y])
+    #     if red > 255/2 && green > 255/2 && blue > 255/2
+    #       solvedMaze[x, y] = ChunkyPNG::Color.from_hex startColour
+    #     end
+    #   end
+    # end
 
+    while @unvisited.length > 0 do
+      minIndex = 0
+      0.upto @unvisited.length - 1 do |i|
+        if @unvisited[i][5] < @unvisited[minIndex][5]
+          minIndex = i
+        end
+      end
+      chosenNode = minIndex
 
-          #solvedMaze[x, y] = ChunkyPNG::Color.from_hex startColour
+      here = @unvisited[chosenNode]
+
+      if here[0] == @destNode[0] && here[1] == @destNode[1]
+        path = [@destNode]
+
+        while here[2] != -1 do
+          here = @visited[here[2]]
+          path.unshift here
+        end
+        return path
+      end
+
+      @unvisited.delete_at chosenNode
+      @visited << here
+
+      friendNodes = lookAround here
+      0.upto friendNodes.length - 1 do |j|
+        friend = friendNodes[j]
+        horizontalFriend = friend[0]
+        verticalFriend   = friend[1]
+
+        if passable? horizontalFriend, verticalFriend || (horizontalFriend = @destNode[0] && verticalFriend == @destNode[1])
+          onVisited = false
+          0.upto @visited.length - 1 do |k|
+            visitedNode = @visited[k]
+            if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[0]
+              onVisited = true
+              break
+            end
+          end
+          next if onVisited
+
+          onUnvisited = false
+          0.upto @visited.length - 1 do |k|
+            unvisitedNode = @unvisited[k]
+            if horizontalFriend == unvisitedNode[0] && verticalFriend == unvisitedNode[0]
+              onUnvisited = true
+              break
+            end
+          end
+
+          unless onUnvisited
+            newNode = node horizontalFriend, verticalFriend, @visited.length - 1, -1, -1, -1
+
+            newNode[3] = here[3] + cost(here, newNode)
+            newNode[4] = heuristic newNode, @destNode
+            newNode[5] = newNode[3] + newNode[4]
+
+            @unvisited.push newNode
+          end
         end
       end
     end
-
-    mazeName = ARGV[ARGV.length - 1]
-    mazeLabel = (mazeName.split /\s|\./)[0]
-    mazeFileType = "." + (mazeName.split /\s|\./)[1]
-    solvedMaze.save(mazeLabel + "-solved" + mazeFileType)
+    return []
   end
 
   def heuristic here, destination
@@ -98,10 +154,14 @@ class Astar
 
   def cost here, destination
     direction = direction here, destination
-    if direction.include? [2, 4, 6, 8]
+    if [2, 4, 6, 8].include? direction
       return 10
     end
     return 14
+  end
+
+  def passable? x, y
+    return true
   end
 
   def direction here, destination
@@ -119,14 +179,40 @@ class Astar
     return 0
   end
 
+  def lookAround here
+    return [
+      [here[0], (here[1] - 1)], # y-positive, up
+      [here[0], (here[1] + 1)], # y-negative, down
+      [(here[0] + 1), here[1]], # x-positive, right
+      [(here[0] - 1), here[1]]  # x-negative, left
+    ]
+  end
+
+  def draw
+    solvedMaze = @maze
+    startColour = "#9a5cff"
+    destColour  = "#e67777"
+    solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
+    solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
+
+    path = solve
+    puts path.to_s
+    path.each do |i|
+    end
+
+    mazeName = ARGV[ARGV.length - 1]
+    mazeLabel = (mazeName.split /\s|\./)[0]
+    mazeFileType = "." + (mazeName.split /\s|\./)[1]
+    solvedMaze.save(mazeLabel + "-solved" + mazeFileType)
+  end
+
+
+
 end
 
 unless image.nil?
   loc = FromTo.new image
   init = Astar.new image, loc.findStart, loc.findEnd
-  init.solve
-end
+  draw = init.draw
 
-class Node
-  # ...
 end
