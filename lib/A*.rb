@@ -82,7 +82,7 @@ class Astar
 
       if here[0] == @destNode[0] && here[1] == @destNode[1]
         path = [@destNode]
-
+        puts "We're here!"
         while here[2] != -1 do
           here = @visited[here[2]]
           path.unshift here
@@ -103,7 +103,7 @@ class Astar
           onVisited = false
           0.upto @visited.length - 1 do |k|
             visitedNode = @visited[k]
-            if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[0]
+            if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[1]
               onVisited = true
               break
             end
@@ -113,7 +113,7 @@ class Astar
           onUnvisited = false
           0.upto @unvisited.length - 1 do |k|
             unvisitedNode = @unvisited[k]
-            if horizontalFriend == unvisitedNode[0] && verticalFriend == unvisitedNode[0]
+            if horizontalFriend == unvisitedNode[0] && verticalFriend == unvisitedNode[1]
               onUnvisited = true
               break
             end
@@ -128,8 +128,6 @@ class Astar
             @unvisited << newNode
             puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
-            # @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
-            # @solvedMaze.save(@mazeLabel + "-solved" + @mazeFileType)
           end
         end
       end
@@ -138,7 +136,7 @@ class Astar
   end
 
   def heuristic here, destination
-    puts "Heuristic:\n" + String(( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor)
+    puts "Heuristic: " + String(( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor)
     return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
   end
 
@@ -194,7 +192,7 @@ class Astar
     @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
     path = solve()
-    #puts path.to_s
+    puts path.to_s
     path.each do |i|
       @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
     end
