@@ -121,14 +121,15 @@ class Astar
 
           unless onUnvisited
             newNode = node horizontalFriend, verticalFriend, @visited.length - 1, -1, -1, -1
-            puts "newNode!"
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
             newNode[5] = newNode[3] + newNode[4]
 
-            @unvisited.push newNode
-            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
-
+            @unvisited << newNode
+            puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
+            puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
+            # @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
+            # @solvedMaze.save(@mazeLabel + "-solved" + @mazeFileType)
           end
         end
       end
@@ -137,7 +138,7 @@ class Astar
   end
 
   def heuristic here, destination
-    puts ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
+    puts "Heuristic:\n" + String(( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor)
     return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
   end
 
@@ -150,7 +151,7 @@ class Astar
   end
 
   def passable? x, y
-    if x < 0 || y < 0 then
+    if (x < 0 || y < 0) || (x > @width || y > @width)
       return false
     end
     red = ChunkyPNG::Color.r(@maze[x, y])
