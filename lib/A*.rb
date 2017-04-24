@@ -87,6 +87,7 @@ class Astar
           here = @visited[here[2]]
           path.unshift here
         end
+        puts "The entire path from #{@firstNode} to #{@destNode} is: \n#{path}"
         return path
       end
 
