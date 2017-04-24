@@ -61,7 +61,6 @@ class Astar
     @width        = maze.dimension.width
     @perimiter    = (2 * @width) + (2 * @height)
     @area = @width * @height
-
     @unvisited = [@firstNode]
     @visited  = []
   end
@@ -69,6 +68,9 @@ class Astar
   def solve
 
     while @unvisited.length > 0 do
+      puts @unvisited.to_s
+      puts @visited.to_s
+      puts ""
       minIndex = 0
       0.upto @unvisited.length - 1 do |i|
         if @unvisited[i][5] < @unvisited[minIndex][5]
@@ -111,7 +113,7 @@ class Astar
           next if onVisited
 
           onUnvisited = false
-          0.upto @visited.length - 1 do |k|
+          0.upto @unvisited.length - 1 do |k|
             unvisitedNode = @unvisited[k]
             if horizontalFriend == unvisitedNode[0] && verticalFriend == unvisitedNode[0]
               onUnvisited = true
@@ -135,7 +137,7 @@ class Astar
   end
 
   def heuristic here, destination
-    return (((here[0] - destination[0] ** 2) + (here[1] - destination[1]) ** 2) ** 0.5).floor
+    return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
   end
 
   def cost here, destination
@@ -192,7 +194,7 @@ class Astar
     path = solve
     puts path.to_s
     path.each do |i|
-      # Reconstructed path drawn on to new image...
+      @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
     end
 
     mazeName = ARGV[ARGV.length - 1]
