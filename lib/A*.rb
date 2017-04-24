@@ -47,12 +47,13 @@ end
 class Astar
   def initialize maze, start, dest
     raise "Either start, end or both locations not found!" if start.empty? || dest.empty?
-    ###puts start.to_s + ", " + dest.to_s # REMOVE ME, testing only.
     @maze = maze
     @start = start
     @dest = dest
     @solvedMaze = @maze
-    ###puts @start[0]
+    mazeName = ARGV[ARGV.length - 1]
+    @mazeLabel = (mazeName.split /\s|\./)[0]
+    @mazeFileType = "." + (mazeName.split /\s|\./)[1]
 
     @firstNode = node start[0], start[1], -1, -1, -1, -1 # [x, y, index, startCost, destcost, totalCost]
     @destNode  = node dest[0], dest[1],   -1, -1, -1, -1
@@ -61,16 +62,14 @@ class Astar
     @width        = maze.dimension.width
     @perimiter    = (2 * @width) + (2 * @height)
     @area = @width * @height
-    @unvisited = [@firstNode]
+    @unvisited = []
     @visited  = []
+    @unvisited << @firstNode
   end
 
   def solve
 
     while @unvisited.length > 0 do
-      puts @unvisited.to_s
-      puts @visited.to_s
-      puts ""
       minIndex = 0
       0.upto @unvisited.length - 1 do |i|
         if @unvisited[i][5] < @unvisited[minIndex][5]
@@ -88,7 +87,6 @@ class Astar
           here = @visited[here[2]]
           path.unshift here
         end
-        puts "foud path!:\n" + path.to_s
         return path
       end
 
@@ -123,12 +121,14 @@ class Astar
 
           unless onUnvisited
             newNode = node horizontalFriend, verticalFriend, @visited.length - 1, -1, -1, -1
-
+            puts "newNode!"
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
             newNode[5] = newNode[3] + newNode[4]
 
             @unvisited.push newNode
+            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
+
           end
         end
       end
@@ -137,6 +137,7 @@ class Astar
   end
 
   def heuristic here, destination
+    puts ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
     return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
   end
 
@@ -191,8 +192,8 @@ class Astar
     @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
     @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
-    path = solve
-    puts path.to_s
+    path = solve()
+    #puts path.to_s
     path.each do |i|
       @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
     end
