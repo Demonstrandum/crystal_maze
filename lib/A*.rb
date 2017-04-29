@@ -63,23 +63,23 @@ class Astar
     @width        = maze.dimension.width
     @perimiter    = (2 * @width) + (2 * @height)
     @area = @width * @height
-    @open = []
+    @visited = []
     @unvisited  = []
-    @open << @firstNode
+    @visited << @firstNode
   end
 
   def solve
 
-    while @open.length > 0 do
+    while @visited.length > 0 do
       minIndex = 0
-      0.upto @open.length - 1 do |i|
-        if @open[i][5] < @open[minIndex][5]
+      0.upto @visited.length - 1 do |i|
+        if @visited[i][5] < @visited[minIndex][5]
           minIndex = i
         end
       end
       chosenNode = minIndex
 
-      here = @open[chosenNode]
+      here = @visited[chosenNode]
 
       if here[0] == @destNode[0] && here[1] == @destNode[1]
         path = [@destNode]
@@ -95,7 +95,7 @@ class Astar
         return path
       end
 
-      @open.delete_at chosenNode
+      @visited.delete_at chosenNode
       @unvisited << here
 
       friendNodes = lookAround here
@@ -115,22 +115,22 @@ class Astar
           end
           next if onUnvisited
 
-          onOpen = false
-          0.upto @open.length - 1 do |k|
-            openNode = @open[k]
-            if horizontalFriend == openNode[0] && verticalFriend == openNode[1]
-              onOpen = true
+          onVisited = false
+          0.upto @visited.length - 1 do |k|
+            visitedNode = @visited[k]
+            if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[1]
+              onVisited = true
               break
             end
           end
 
-          unless onOpen
+          unless onVisited
             newNode = node horizontalFriend, verticalFriend, @unvisited.length - 1, -1, -1, -1
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
             newNode[5] = newNode[3] + newNode[4]
 
-            @open << newNode
+            @visited << newNode
             #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
             # Uncoment below to see unvisited nodes!
