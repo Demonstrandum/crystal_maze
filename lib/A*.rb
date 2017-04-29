@@ -6,7 +6,7 @@ image = nil
 begin
   image = ChunkyPNG::Image.from_file(ARGV[ARGV.length - 1])
 rescue
-  puts "Please supply correct commandline arguments. No image given."
+  puts "Please supply correct commandline arguments.\nNo image given or wrong image format, PNG only!"
 end
 
 class FromTo
