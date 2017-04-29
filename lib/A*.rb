@@ -83,12 +83,15 @@ class Astar
 
       if here[0] == @destNode[0] && here[1] == @destNode[1]
         path = [@destNode]
-        puts "We're here!"
+        puts "We're here! Final node at: (x: #{here[0]}, y: #{here[1]})"
         while here[2] != -1 do
           here = @visited[here[2]]
           path.unshift here
         end
-        puts "The entire path from #{@firstNode} to #{@destNode} is: \n#{path}"
+        puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
+        path.each do |arr|
+          @solvedMaze[arr[0], arr[1]] = ChunkyPNG::Color.from_hex "#6691ff"
+        end
         return path
       end
 
@@ -152,7 +155,7 @@ class Astar
   end
 
   def passable? x, y
-    if (x < 0 || y < 0) || (x > @width || y > @width)
+    if (x < 0 || y < 0) || (x > @width - 1 || y > @height - 1)
       return false
     end
     red = ChunkyPNG::Color.r(@maze[x, y])
@@ -192,14 +195,13 @@ class Astar
     startColour = "#9a5cff"
     destColour  = "#55ff66"
     @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-    @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
-
+    #@solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
+    solve
     # path = solve()
     # puts path.to_s
     # path.each do |i|
-    #   @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
+    #   @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#6691ff"
     # end
-    solve
 
     mazeName = ARGV[ARGV.length - 1]
     mazeLabel = (mazeName.split /\s|\./)[0]
