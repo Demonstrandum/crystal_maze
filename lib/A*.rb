@@ -63,29 +63,29 @@ class Astar
     @width        = maze.dimension.width
     @perimiter    = (2 * @width) + (2 * @height)
     @area = @width * @height
-    @unvisited = []
-    @visited  = []
-    @unvisited << @firstNode
+    @open = []
+    @unvisited  = []
+    @open << @firstNode
   end
 
   def solve
 
-    while @unvisited.length > 0 do
+    while @open.length > 0 do
       minIndex = 0
-      0.upto @unvisited.length - 1 do |i|
-        if @unvisited[i][5] < @unvisited[minIndex][5]
+      0.upto @open.length - 1 do |i|
+        if @open[i][5] < @open[minIndex][5]
           minIndex = i
         end
       end
       chosenNode = minIndex
 
-      here = @unvisited[chosenNode]
+      here = @open[chosenNode]
 
       if here[0] == @destNode[0] && here[1] == @destNode[1]
         path = [@destNode]
         puts "We're here! Final node at: (x: #{here[0]}, y: #{here[1]})"
         while here[2] != -1 do
-          here = @visited[here[2]]
+          here = @unvisited[here[2]]
           path.unshift here
         end
         puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
@@ -95,8 +95,8 @@ class Astar
         return path
       end
 
-      @unvisited.delete_at chosenNode
-      @visited << here
+      @open.delete_at chosenNode
+      @unvisited << here
 
       friendNodes = lookAround here
       0.upto friendNodes.length - 1 do |j|
@@ -105,16 +105,6 @@ class Astar
         verticalFriend   = friend[1]
 
         if passable? horizontalFriend, verticalFriend || (horizontalFriend = @destNode[0] && verticalFriend == @destNode[1])
-          onVisited = false
-          0.upto @visited.length - 1 do |k|
-            visitedNode = @visited[k]
-            if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[1]
-              onVisited = true
-              break
-            end
-          end
-          next if onVisited
-
           onUnvisited = false
           0.upto @unvisited.length - 1 do |k|
             unvisitedNode = @unvisited[k]
@@ -123,18 +113,28 @@ class Astar
               break
             end
           end
+          next if onUnvisited
 
-          unless onUnvisited
-            newNode = node horizontalFriend, verticalFriend, @visited.length - 1, -1, -1, -1
+          onOpen = false
+          0.upto @open.length - 1 do |k|
+            openNode = @open[k]
+            if horizontalFriend == openNode[0] && verticalFriend == openNode[1]
+              onOpen = true
+              break
+            end
+          end
+
+          unless onOpen
+            newNode = node horizontalFriend, verticalFriend, @unvisited.length - 1, -1, -1, -1
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
             newNode[5] = newNode[3] + newNode[4]
 
-            @unvisited << newNode
+            @open << newNode
             #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
-            # Uncoment below to see visited nodes!
-            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
+            # Uncoment below to see unvisited nodes!
+            @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
           end
         end
       end
@@ -192,10 +192,6 @@ class Astar
   end
 
   def draw
-    startColour = "#9a5cff"
-    destColour  = "#55ff66"
-    @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-
     puts "Solving..."
     go = Time.new
 
@@ -211,6 +207,11 @@ class Astar
         puts "Circa " + minutes.to_s + " Minute."
       end
     end
+
+    startColour = "#ff5c7e"
+    destColour  = "#68fb9f"
+    @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
+    @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
     mazeName = ARGV[ARGV.length - 1]
     mazeLabel = (mazeName.split /\s|\./)[0]
