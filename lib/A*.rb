@@ -131,9 +131,10 @@ class Astar
             newNode[5] = newNode[3] + newNode[4]
 
             @unvisited << newNode
-            puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
-            puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
-            @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
+            #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
+            #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
+            # Uncoment below to see visited nodes!
+            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
           end
         end
       end
@@ -142,7 +143,6 @@ class Astar
   end
 
   def heuristic here, destination
-    puts "Heuristic: " + String(( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor)
     return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
   end
 
@@ -195,13 +195,22 @@ class Astar
     startColour = "#9a5cff"
     destColour  = "#55ff66"
     @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-    #@solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
-    solve
-    # path = solve()
-    # puts path.to_s
-    # path.each do |i|
-    #   @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#6691ff"
-    # end
+
+    puts "Solving..."
+    go = Time.new
+
+    solve # Here we go
+
+    finish = Time.new
+    puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
+    minutes = ((finish - go) / 60).round
+    if minutes > 0
+      if minutes > 1
+        puts "Circa " + minutes.to_s + " Minutes."
+      else
+        puts "Circa " + minutes.to_s + " Minute."
+      end
+    end
 
     mazeName = ARGV[ARGV.length - 1]
     mazeLabel = (mazeName.split /\s|\./)[0]
