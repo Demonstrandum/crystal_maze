@@ -1,4 +1,5 @@
 require 'chunky_png'
+
 @inf = Float::INFINITY
 image = nil
 
@@ -129,6 +130,7 @@ class Astar
             @unvisited << newNode
             puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
+            @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#ffaa66"
           end
         end
       end
@@ -192,11 +194,12 @@ class Astar
     @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
     @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
-    path = solve()
-    puts path.to_s
-    path.each do |i|
-      @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
-    end
+    # path = solve()
+    # puts path.to_s
+    # path.each do |i|
+    #   @solvedMaze[path[i][0], path[i][1]] = ChunkyPNG::Color.from_hex "#ffaa66"
+    # end
+    solve
 
     mazeName = ARGV[ARGV.length - 1]
     mazeLabel = (mazeName.split /\s|\./)[0]
