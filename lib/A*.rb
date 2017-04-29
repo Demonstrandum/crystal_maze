@@ -100,9 +100,8 @@ class Astar
 
       friendNodes = lookAround here
       0.upto friendNodes.length - 1 do |j|
-        friend = friendNodes[j]
-        horizontalFriend = friend[0]
-        verticalFriend   = friend[1]
+        horizontalFriend = friendNodes[j][0]
+        verticalFriend   = friendNodes[j][1]
 
         if passable? horizontalFriend, verticalFriend || (horizontalFriend = @destNode[0] && verticalFriend == @destNode[1])
           onUnvisited = false
@@ -124,7 +123,7 @@ class Astar
             end
           end
 
-          unless onVisited
+          unless onVisited # If you're somwhere new
             newNode = node horizontalFriend, verticalFriend, @unvisited.length - 1, -1, -1, -1
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
