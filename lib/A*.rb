@@ -133,7 +133,7 @@ class Astar
             #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
             # Uncoment below to see unvisited nodes!
-            @solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
+            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
           end
         end
       end
