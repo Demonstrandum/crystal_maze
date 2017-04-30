@@ -16,4 +16,4 @@ e.g. `yourImage-solved.png` in the same location as the input image.
 
 ## Maze image requirements
 The start and end points of the maze must be from top to bottom. <br />
-It's highly recommended that the maze's walls and path are 1 pixel wide as the solver draws the path as one pixel.  
+It's highly recommended that the maze's walls and paths are 1 pixel wide as the program draws and reads the paths as one pixel.  
