@@ -196,17 +196,20 @@ class Astar
     puts "Solving..."
     go = Time.new
 
-    solve # Here we go
-
-    finish = Time.new
-    puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
-    minutes = ((finish - go) / 60).round
-    if minutes > 0
-      if minutes > 1
-        puts "Circa " + minutes.to_s + " Minutes."
-      else
-        puts "Circa " + minutes.to_s + " Minute."
+    path = solve # Here we go
+    unless path.empty?
+      finish = Time.new
+      puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
+      minutes = ((finish - go) / 60).round
+      if minutes > 0
+        if minutes > 1
+          puts "Circa " + minutes.to_s + " Minutes."
+        else
+          puts "Circa " + minutes.to_s + " Minute."
+        end
       end
+    else
+      puts "No solution found, solve function returned empty array for path!\nPlease make sure your maze is solvable!"
     end
 
     startColour = "#ff3c5e"
