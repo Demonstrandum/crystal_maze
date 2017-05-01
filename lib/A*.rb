@@ -1,6 +1,5 @@
 require 'chunky_png'
 
-@inf = Float::INFINITY
 image = nil
 
 begin
@@ -53,10 +52,10 @@ class Astar
     @dest = dest
     @solvedMaze = @maze
     mazeName = ARGV[ARGV.length - 1]
-    @mazeLabel = (mazeName.split /\s|\./)[0]
-    @mazeFileType = "." + (mazeName.split /\s|\./)[1]
+    @mazeLabel = mazeName.split( /()\s|\./)[0]
+    @mazeFileType = "." + mazeName.split(/\s|\./)[1]
 
-    @firstNode = node start[0], start[1], -1, -1, -1, -1 # [x, y, index, startCost, destcost, totalCost]
+    @firstNode = node start[0], start[1], -1, -1, -1, -1 # [x, y, index, startCost, destcost, heuristic]
     @destNode  = node dest[0], dest[1],   -1, -1, -1, -1
 
     @height       = maze.dimension.height
@@ -70,7 +69,7 @@ class Astar
 
   def solve
 
-    while @visited.length > 0 do
+    while not @visited.empty? do
       minIndex = 0
       0.upto @visited.length - 1 do |i|
         if @visited[i][5] < @visited[minIndex][5]
@@ -90,7 +89,7 @@ class Astar
         end
         puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
         path.each do |arr|
-          @solvedMaze[arr[0], arr[1]] = ChunkyPNG::Color.from_hex "#6691ff"
+          @solvedMaze[arr[0], arr[1]] = ChunkyPNG::Color.from_hex "#752bff"
         end
         return path
       end
@@ -122,8 +121,12 @@ class Astar
               break
             end
           end
-
-          unless onVisited # If you're somwhere new
+          friendHeuristics = Array.new
+          for k in 0..friendNodes.length - 1 do
+            friendHeuristics << heuristic(friendNodes[k], @dest)
+          end
+          lowestHeuristic = friendHeuristics.min
+          if not onVisited && heuristic(friendNodes[j], @dest) == lowestHeuristic # If you're somwhere new and is fastest
             newNode = node horizontalFriend, verticalFriend, @unvisited.length - 1, -1, -1, -1
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic newNode, @destNode
@@ -133,7 +136,7 @@ class Astar
             #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
             # Uncoment below to see unvisited nodes!
-            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#fad1ee"
+            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#999"
           end
         end
       end
@@ -178,13 +181,12 @@ class Astar
       when direction[1] > 0 && direction[0] == 0
         6 # x-positive, right
     end
-    return 0
   end
 
   def lookAround here
     return [
-      [here[0], (here[1] - 1)], # y-positive, up
-      [here[0], (here[1] + 1)], # y-negative, down
+      [here[0], (here[1] + 1)], # y-positive, up
+      [here[0], (here[1] - 1)], # y-negative, down
       [(here[0] + 1), here[1]], # x-positive, right
       [(here[0] - 1), here[1]]  # x-negative, left
     ]
@@ -194,33 +196,33 @@ class Astar
     puts "Solving..."
     go = Time.new
 
-    solve # Here we go
-
-    finish = Time.new
-    puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
-    minutes = ((finish - go) / 60).round
-    if minutes > 0
-      if minutes > 1
-        puts "Circa " + minutes.to_s + " Minutes."
-      else
-        puts "Circa " + minutes.to_s + " Minute."
+    path = solve # Here we go
+    unless path.empty?
+      finish = Time.new
+      puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
+      minutes = ((finish - go) / 60).round
+      if minutes > 0
+        if minutes > 1
+          puts "Circa " + minutes.to_s + " Minutes."
+        else
+          puts "Circa " + minutes.to_s + " Minute."
+        end
       end
+    else
+      puts "No solution found, solve function returned empty array for path!\nPlease make sure your maze is solvable!"
     end
 
-    startColour = "#ff5c7e"
-    destColour  = "#68fb9f"
+    startColour = "#ff3c5e"
+    destColour  = "#68ff9f"
     @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
     @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
-    mazeName = ARGV[ARGV.length - 1]
-    mazeLabel = (mazeName.split /\s|\./)[0]
-    mazeFileType = "." + (mazeName.split /\s|\./)[1]
-    @solvedMaze.save(mazeLabel + "-solved" + mazeFileType)
+    @solvedMaze.save(@mazeLabel + "-solved" + @mazeFileType)
   end
 end
 
 unless image.nil?
   loc = FromTo.new image
   init = Astar.new image, loc.findStart, loc.findEnd
-  draw = init.draw
+  init.draw
 end
