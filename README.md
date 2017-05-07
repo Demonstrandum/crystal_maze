@@ -7,9 +7,14 @@ Clone and enter repository:
 ```shell
 git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
 ```
-then run the program itself:
+Then install the gem:
 ```shell
-ruby lib/A\*.rb ~/Pictures/yourImage.png
+gem build A-Star.gemspec
+gem install A-Star-*
+```
+and run the program itself:
+```shell
+a-star ~/Pictures/yourImage.png
 ```
 This will solve the maze and make and image with the suffix "-solved"<br />
 e.g. `yourImage-solved.png` in the same location as the input image.
