@@ -80,9 +80,15 @@ class AStar
           path.unshift here
         end
         puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
-        path.each do |arr|
-          @solvedMaze[arr[0], arr[1]] = ChunkyPNG::Color.from_hex "#752bff"
+
+        hue = 0
+        hueCoeff = 360 / path.length
+
+        (1..path.length).each do |n|
+          @solvedMaze[ path[n - 1][0], path[n - 1][1] ] = ChunkyPNG::Color.from_hsl(hue, 1, 0.6)
+          hue = (hueCoeff * n).ceil # Rainbow!
         end
+
         return path
       end
 
@@ -204,10 +210,10 @@ class AStar
       puts "No solution found, solve function returned empty array for path!\nPlease make sure your maze is solvable!"
     end
 
-    startColour = "#ff3c5e"
-    destColour  = "#68ff9f"
-    @solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
-    @solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
+    #startColour = "#ff3c5e"
+    #destColour  = "#68ff9f"
+    #@solvedMaze[@start[0], @start[1]] = ChunkyPNG::Color.from_hex startColour
+    #@solvedMaze[@dest[0], @dest[1]] = ChunkyPNG::Color.from_hex destColour
 
     @solvedMaze.save(@mazeLabel + "-solved" + @mazeFileType)
   end
