@@ -8,6 +8,11 @@ Clone and enter repository:
 git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
 ```
 Then install the gem:
+Either online:
+```shell
+gem install a-star
+```
+or build it from source:
 ```shell
 gem build a-star.gemspec
 gem install a-star-*
