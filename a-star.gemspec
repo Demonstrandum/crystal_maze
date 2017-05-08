@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version     = '0.1.1'
   s.required_ruby_version = '>= 1.9.2'
   s.executables << 'a-star'
-  s.date        = '2017-05-8'
+  s.date        = '2017-05-08'
   s.summary     = "A* Path finding"
   s.description = "A* Search Algorithm for PNG images"
   s.authors     = ["Demonstrandum"]
