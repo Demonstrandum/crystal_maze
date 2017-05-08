@@ -79,7 +79,7 @@ class AStar
           here = @unvisited[here[2]]
           path.unshift here
         end
-        puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
+        puts "The entire path from node #{@start} to node #{@dest} are the nodes: \n#{path}"
 
         hue = 0
         hueCoeff = 360.0 / path.length
