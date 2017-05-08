@@ -2,7 +2,7 @@
 
 A* path finding algorithm for images, in Ruby.
 
-<img src="https://cloud.githubusercontent.com/assets/26842759/25824501/9437a29c-3437-11e7-98b9-ee918f764960.png" width="175"  alt="Solved maze image." image-rendering="pixelated" />
+<img src="https://cloud.githubusercontent.com/assets/26842759/25825711/e5bc5aaa-343b-11e7-95f6-d883ade4286f.png" width="175"  alt="Solved maze image." />
 
 ## Installation
 First install the gem, either online:
