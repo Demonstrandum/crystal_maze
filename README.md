@@ -9,8 +9,8 @@ git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
 ```
 Then install the gem:
 ```shell
-gem build A-Star.gemspec
-gem install A-Star-*
+gem build a-star.gemspec
+gem install a-star-*
 ```
 and run the program itself:
 ```shell
