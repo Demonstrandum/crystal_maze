@@ -82,11 +82,11 @@ class AStar
         puts "The entire path from #{@start} to #{@dest} is: \n#{path}"
 
         hue = 0
-        hueCoeff = 360 / path.length
+        hueCoeff = 360.0 / path.length
 
         (1..path.length).each do |n|
           @solvedMaze[ path[n - 1][0], path[n - 1][1] ] = ChunkyPNG::Color.from_hsl(hue, 1, 0.6)
-          hue = (hueCoeff * n).ceil # Rainbow!
+          hue = (hueCoeff * n).floor # Rainbow!
         end
 
         return path
