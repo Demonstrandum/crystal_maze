@@ -1,6 +1,7 @@
 # A-Star
 
 A* path finding algorithm for images, in Ruby.
+![Image of solved maze](https://cloud.githubusercontent.com/assets/26842759/25824501/9437a29c-3437-11e7-98b9-ee918f764960.png | width=175)
 
 ## Installation
 First install the gem, either online:
