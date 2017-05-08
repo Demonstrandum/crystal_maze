@@ -3,16 +3,15 @@
 A* path finding algorithm for images, in Ruby.
 
 ## Usage
-Clone and enter repository:
-```shell
-git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
-```
-Then install the gem:
-Either online:
+Then install the gem, either online:
 ```shell
 gem install a-star
 ```
 or build it from source:
+Clone and enter repository:
+```shell
+git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
+```
 ```shell
 gem build a-star.gemspec
 gem install a-star-*
