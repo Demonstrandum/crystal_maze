@@ -1,6 +1,6 @@
-name: rainbow
+name: a-star
 version: 0.0.1
-description: HSL test
+description: A* Path finding for PNG mazes, from Ruby now in Crystal!
 
 authors:
   - Demonstrandum <knutsen@jetspace.co>
