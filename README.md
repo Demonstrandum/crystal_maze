@@ -11,9 +11,9 @@ Clone and enter repository:
 ```shell
 git clone https://github.com/Demonstrandum/Crystal-Maze.git && cd Crystal-Maze
 ```
-them install dependencies with shard ([StumpyPNG](https://github.com/stumpycr/stumpy_png)):
+them install dependencies with [`shards`](https://github.com/crystal-lang/shards) ([StumpyPNG](https://github.com/stumpycr/stumpy_png)):
 ```shell
-shard install
+shards install
 ```
 then run the make file:
 ```shell
