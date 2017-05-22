@@ -1,11 +1,11 @@
 COMP = crystal
 FLAGS  = build --release
-TARGET = maze
+TARGET = bin/maze
 DEST = /usr/local/bin
 all: $(TARGET)
 $(TARGET): $(TARGET).cr
 	@echo "Compiling $(TARGET).cr..."
-	$(COMP) $(FLAGS) -o $(TARGET) $(TARGET).cr
+	$(COMP) $(FLAGS) -o $(TARGET) src/$(TARGET).cr
 
 install:
 	@echo "Copying $(TARGET) to $(DEST)..."
@@ -17,4 +17,4 @@ clean:
 
 uninstall:
 	@echo "Removing binary from $(DEST)"
-	rm -f $(DEST)/$(TARGET)
+	rm -f $(DEST)/maze
