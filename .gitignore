@@ -1,5 +1,8 @@
-# gem
-*.gem
+# crystal/shards
+bin/
+*stumpy*
+*.lock
+.shards
 
 # solved pictures
 *-solved.png
