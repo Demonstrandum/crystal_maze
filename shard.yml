@@ -1,0 +1,12 @@
+name: rainbow
+version: 0.0.1
+description: HSL test
+
+authors:
+  - Demonstrandum <knutsen@jetspace.co>
+
+dependencies:
+  stumpy_png:
+    github: l3kn/stumpy_png
+
+license: GNU GPL-3.0
