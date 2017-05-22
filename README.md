@@ -1,22 +1,25 @@
-# A-Star
+# Crystal-Maze
 
-A* path finding algorithm for images, in Ruby.
+A* Path finding for PNG mazes, from Ruby now in Crystal! Using StumpyPNG!
+Now ×40 faster than its Ruby counterpart: [A-Star](https://github.com/Demonstrandum/A-Star)
 
 <img src="https://cloud.githubusercontent.com/assets/26842759/25825711/e5bc5aaa-343b-11e7-95f6-d883ade4286f.png" width="175"  alt="Solved maze image." />
 
 ## Installation
-First install the gem, either online:
-```shell
-gem install a-star
-```
-or build it from source:
+Build it from source:
 Clone and enter repository:
 ```shell
-git clone https://github.com/Demonstrandum/A-Star.git && cd A-Star
+git clone https://github.com/Demonstrandum/Crystal-Maze.git && cd Crystal-Maze
 ```
+them install dependencies with shard ([StumpyPNG](https://github.com/stumpycr/stumpy_png)):
 ```shell
-gem build a-star.gemspec
-gem install a-star-*
+shard install
+```
+then run the make file:
+```shell
+make
+make install clean
+#make uninstall, if you want.
 ```
 ## Usage
 To run the program itself:
