@@ -1,0 +1,14 @@
+require "A_Star.cr"
+
+image = nil
+begin
+  image = ChunkyPNG::Image.from_file(ARGV[ARGV.length - 1])
+rescue
+  puts "Please supply correct commandline arguments.\nNo image given or wrong image format, PNG only!"
+end
+
+unless image.nil?
+  loc = FromTo.new image
+  init = AStar.new image, loc.findStart, loc.findEnd
+  init.draw
+end
