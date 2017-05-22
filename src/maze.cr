@@ -1,14 +1,16 @@
-require "A_Star.cr"
+require "A_Star"
 
-image = nil
 begin
-  image = ChunkyPNG::Image.from_file(ARGV[ARGV.length - 1])
+  image : StumpyCore::Canvas = StumpyPNG.read(ARGV[0])
 rescue
   puts "Please supply correct commandline arguments.\nNo image given or wrong image format, PNG only!"
+  exit 1
 end
 
-unless image.nil?
-  loc = FromTo.new image
-  init = AStar.new image, loc.findStart, loc.findEnd
-  init.draw
+begining, ending = FromTo.findStart(image), FromTo.findEnd(image)
+if begining.empty? || ending.empty?
+  puts "Could not find start and/or finish! Exiting..."
+  exit 1
 end
+
+AStar.new(image, begining, ending)
