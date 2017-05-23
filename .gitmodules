@@ -1,0 +1,6 @@
+[submodule "lib/stumpy_png"]
+	path = lib/stumpy_png
+	url = https://github.com/stumpycr/stumpy_png
+[submodule "lib/stumpy_core"]
+	path = lib/stumpy_core
+	url = https://github.com/stumpycr/stumpy_core
