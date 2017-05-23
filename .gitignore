@@ -1,6 +1,5 @@
 # crystal/shards
 bin/
-*stumpy*
 *.lock
 .shards
 
