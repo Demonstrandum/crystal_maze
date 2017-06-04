@@ -18,8 +18,8 @@ shards install
 and run the make file:
 ```shell
 make
-make install clean
-#make uninstall, if you want.
+sudo make install clean
+#sudo make uninstall # to remove the program
 ```
 
 ## Usage
@@ -29,6 +29,12 @@ maze ~/Pictures/yourImage.png
 ```
 This will solve the maze and make and image with the suffix "-solved"<br />
 e.g. `yourImage-solved.png` in the same location as the input image.
+
+
+You can also add the optional argument of heuristic distance type at the end. Right now only `euclidean` and `manhattan` distance calculation types are supported. As you can derive from above, with no argument it will default to one of the (which is `euclidean`). For example:
+```shell
+maze aMaze.png manhattan
+```
 
 ## Maze PNG requirements
 The start and end points of the maze must be from top to bottom. <br />
