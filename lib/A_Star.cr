@@ -132,15 +132,15 @@ class AStar
     if type == "euclidean"
       return (
         Math.sqrt( 
-          ((here[0] - destination[0]) ** 2) + 
-          ((here[1] - destination[1]) ** 2) 
+          ((destination[0] - here[0]) ** 2) + 
+          ((destination[1] - here[1]) ** 2) 
         )
       ).floor
     end
     
     return (
-      (destination[0] - here[0]) + 
-      (destination[1] - here[1])
+      (destination[0] - here[0]).abs + 
+      (destination[1] - here[1]).abs
     )
   end
 
