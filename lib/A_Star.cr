@@ -137,7 +137,8 @@ class AStar
         )
       ).floor
     end
-    return ( #Manhattan distance defaults
+    
+    return (
       (destination[0] - here[0]) + 
       (destination[1] - here[1])
     )
