@@ -31,7 +31,9 @@ This will solve the maze and make and image with the suffix "-solved"<br />
 e.g. `yourImage-solved.png` in the same location as the input image.
 
 
-You can also add the optional argument of heuristic distance type at the end. Right now only `euclidean` and `manhattan` distance calculation types are supported. As you can derive from above, with no argument it will default to one of the (which is `euclidean`). For example:
+You can also add the optional argument of heuristic distance type at the end. Right now only `euclidean` and `manhattan` distance calculation types are supported. As you can derive from above, with no argument it will default to one of them (which is `manhattan`). 
+
+For example:
 ```shell
 maze aMaze.png manhattan
 ```

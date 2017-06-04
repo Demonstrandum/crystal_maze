@@ -9,7 +9,7 @@ end
 
 distanceTypes : Array(String) = ["euclidean", "manhattan"]
 if ARGV.size <= 1
-  ARGV << "euclidean" # If distance not specified, set to euclidean.
+  ARGV << "manhattan" # If distance not specified, set to manhattan.
 end
 
 unless distanceTypes.includes? ARGV[1].downcase
