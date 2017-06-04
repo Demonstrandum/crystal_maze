@@ -128,8 +128,19 @@ class AStar
   end
 
 
-  def heuristic(here, destination)
-    return ( Math.sqrt( ((here[0] - destination[0]) ** 2) + ((here[1] - destination[1]) ** 2) ) ).floor
+  def heuristic(here, destination, type=ARGV[1])
+    if type == "euclidean"
+      return (
+        Math.sqrt( 
+          ((here[0] - destination[0]) ** 2) + 
+          ((here[1] - destination[1]) ** 2) 
+        )
+      ).floor
+    end
+    return ( #Manhattan distance defaults
+      (destination[0] - here[0]) + 
+      (destination[1] - here[1])
+    )
   end
 
   def cost(here, destination)
@@ -182,8 +193,8 @@ class AStar
     finish = Time.new # Take the finish time
 
     unless path.empty?
-      puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds!"
-      minutes = ((finish - go) / 60.0).to_f.round
+        puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds."
+      minutes = ((finish - go) / 60.0).to_f.round.to_i
       if minutes > 0
         if minutes > 1
           puts "Circa " + minutes.to_s + " Minutes."

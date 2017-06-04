@@ -7,6 +7,10 @@ rescue
   exit 1
 end
 
+if ARGV.size <= 1
+  ARGV << "manhattan" # If distance not specified, set to manhattan.
+end
+
 begining, ending = FromTo.findStart(image), FromTo.findEnd(image)
 if begining.empty? || ending.empty?
   puts "Could not find start and/or finish! Exiting..."
