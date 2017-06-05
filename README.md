@@ -31,11 +31,11 @@ This will solve the maze and make and image with the suffix "-solved"<br />
 e.g. `yourImage-solved.png` in the same location as the input image.
 
 
-You can also add the optional argument of heuristic distance type at the end. Right now only `euclidean` and `manhattan` distance calculation types are supported. As you can derive from above, with no argument it will default to one of them (which is `manhattan`). 
+You can also add optional arguments of heuristic distance type, verbosity and wheather to draw nodes or not. For heuristic distance just type `euclidean` or `manhattan`  as argument for distance calculation type, these are the only two currently supported. Showing nodes is done with the argument `--show-nodes` and for verbosity (prints the nodes of the final path) either `-v`, `verbose` or `--verbose`.
 
 For example:
 ```shell
-maze aMaze.png manhattan
+maze euclidean -v hipMaze.png --show-nodes
 ```
 
 ## Maze PNG requirements
