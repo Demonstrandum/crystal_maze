@@ -25,22 +25,25 @@ class FromTo
   end
 end
 
-def node(x, y, index, cost, heuristic, totalCost)
-  return [x, y, index, cost, heuristic, totalCost]
+def node(x : Int32, y : Int32, index : Int32, cost : Int32, heuristic : Int32, totalCost : Int32)
+  return [x, y, index, cost, heuristic, totalCost] of Int32
 end
 
 class AStar
-  def initialize(maze : StumpyCore::Canvas, start : Array(Int32), dest : Array(Int32))
-    @maze = maze
+  def initialize(maze : StumpyCore::Canvas, start : Array(Int32), dest : Array(Int32), hideNodes=true, distanceType="manhattan")
+    @maze  = maze
     @start = start
-    @dest = dest
+    @dest  = dest
     @solvedMaze = @maze
-    @firstNode = [start[0], start[1], -1, -1, -1, -1] # [x, y, index, cost, heuristic, totalCost]
-    @destNode  = [dest[0],  dest[1],  -1, -1, -1, -1]
+    @firstNode  = [start[0], start[1], -1, -1, -1, -1] #[x, y, index, cost, heuristic, cost + heuristic]
+    @destNode   = [dest[0],  dest[1],  -1, -1, -1, -1]
 
-    @visited = [] of Array(Int32)
+    @visited    = [] of Array(Int32)
     @unvisited  = [] of Array(Int32)
-    @visited.push(@firstNode)
+    @visited << @firstNode
+
+    @hideNodes = hideNodes
+    @distanceType  = distanceType
 
     draw()
   end
@@ -59,12 +62,15 @@ class AStar
 
       if here[0] == @destNode[0] && here[1] == @destNode[1]
         path = [@destNode]
-        puts "We\'re here! Final node at: (x: #{here[0].to_s}, y: #{here[1].to_s})"
+        puts "\nWe\'re here! Final node at: (x: #{here[0].to_s}, y: #{here[1].to_s})"
         until here[2] == -1
           here = @unvisited[here[2]]
           path.unshift(here)
         end
-        puts "The entire path from node #{@start} to node #{@dest} are the nodes: \n#{path}"
+
+        if (ARGV.includes?("-v")) || (ARGV.includes?("verbose")) || (ARGV.includes?("--verbose"))
+          puts "The entire path from node #{@start} to node #{@dest} are the nodes: \n#{path}\n\n"
+        end
 
         hue = 0
         hueCoeff = 360.0 / path.size # when * by path.size (the end of the arr) it would be 360, so one complete rainbow
@@ -104,12 +110,8 @@ class AStar
               break
             end
           end
-          friendHeuristics = [] of Int32
-          (0..friendNodes.size - 1).each do |k|
-            friendHeuristics << heuristic(friendNodes[k], @dest).to_i
-          end
-          lowestHeuristic = friendHeuristics.min
-          unless onVisited && heuristic(friendNodes[j], @dest) != lowestHeuristic # If you're somwhere new and is fastest
+
+          unless onVisited
             newNode = node horizontalFriend, verticalFriend, @unvisited.size - 1, -1, -1, -1
             newNode[3] = here[3] + cost(here, newNode)
             newNode[4] = heuristic(newNode, @destNode).to_i
@@ -118,8 +120,10 @@ class AStar
             @visited << newNode
             #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
             #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
-            # Uncoment below to see unvisited nodes!
-            #@solvedMaze[horizontalFriend, verticalFriend] = ChunkyPNG::Color.from_hex "#999"
+            
+            unless @hideNodes
+              @solvedMaze[horizontalFriend, verticalFriend] = RGBA.from_hex "#e2e2e2"
+            end
           end
         end
       end
@@ -128,8 +132,8 @@ class AStar
   end
 
 
-  def heuristic(here, destination, type=ARGV[1])
-    if type == "euclidean"
+  def heuristic(here, destination)
+    if @distanceType == "euclidean"
       return (
         Math.sqrt( 
           ((destination[0] - here[0]) ** 2) + 
@@ -194,7 +198,7 @@ class AStar
     finish = Time.new # Take the finish time
 
     unless path.empty?
-        puts "\n\nTime taken to solve: " + (finish - go).to_s + " seconds."
+        puts "Time taken to solve: " + (finish - go).to_s + " seconds."
       minutes = ((finish - go) / 60.0).to_f.round.to_i
       if minutes > 0
         if minutes > 1
@@ -206,7 +210,16 @@ class AStar
     else
       puts "No solution found, solve function returned empty array for path!\nPlease make sure your maze is solvable!"
     end
-    mazeName : String = ARGV[0].strip
+
+
+    filepath : String = ""
+    ARGV.each do |argument|
+      if argument.includes? ".png"
+        filepath = argument
+        break
+      end
+    end
+    mazeName : String = filepath.strip
     mazeLabel : String = mazeName.split(/()\s|\./)[0]
     mazeFileType : String = "." + mazeName.split(/\s|\./)[1]
     StumpyPNG.write(@solvedMaze, mazeLabel + "-solved" + mazeFileType)
