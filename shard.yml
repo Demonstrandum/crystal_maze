@@ -1,5 +1,5 @@
 name: crystal-maze
-version: 1.0.1
+version: 1.1.1
 description: A* Path finding for PNG mazes, from Ruby now in Crystal!
 
 authors:

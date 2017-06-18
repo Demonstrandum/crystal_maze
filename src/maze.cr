@@ -32,10 +32,16 @@ else
   puts "Nodes will be visible in the output image."
 end
 
-begining, ending = FromTo.findStart(image), FromTo.findEnd(image)
+begining, ending = CrystalMaze::FromTo.findStart(image), CrystalMaze::FromTo.findEnd(image)
 if begining.empty? || ending.empty?
   puts "Could not find start and/or finish! Exiting..."
   exit 1
 end
 
-AStar.new(image, begining, ending, hideNodes)
+CrystalMaze::AStar.new(
+  image,
+  begining,
+  ending,
+  hideNodes,
+  distance
+).draw
