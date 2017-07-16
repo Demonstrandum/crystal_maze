@@ -28,7 +28,7 @@ module CrystalMaze
   end
 
   class AStar
-    def initialize(maze : StumpyCore::Canvas, start : Array(Int32), dest : Array(Int32), hideNodes=true, distanceType="manhattan")
+    def initialize(maze : StumpyCore::Canvas, start : Array(Int32), dest : Array(Int32), hide_nodes=true, distanceType="manhattan")
       @maze  = maze
       @start = start
       @dest  = dest
@@ -36,11 +36,11 @@ module CrystalMaze
       @firstNode  = [start[0], start[1], -1, -1, -1, -1] #[x, y, index, cost, heuristic, cost + heuristic]
       @destNode   = [dest[0],  dest[1],  -1, -1, -1, -1]
 
-      @visited    = [] of Array(Int32)
-      @unvisited  = [] of Array(Int32)
-      @visited << @firstNode
+      @open    = [] of Array(Int32)
+      @closed  = [] of Array(Int32)
+      @open << @firstNode
 
-      @hideNodes = hideNodes
+      @hide_nodes = hide_nodes
       @distanceType  = distanceType
     end
 
@@ -80,22 +80,22 @@ module CrystalMaze
     end
 
     private def solve
-      until @visited.empty?
-        minIndex = 0
-        0.upto @visited.size - 1 do |i|
-          if @visited[i][5] < @visited[minIndex][5]
-            minIndex = i
+      until @open.empty?
+        min_i = 0
+        0.upto @open.size - 1 do |i|
+          if @open[i][5] < @open[min_i][5]
+            min_i = i
           end
         end
-        chosenNode = minIndex
+        chosen_node = min_i
 
-        here : Array(Int32) = @visited[chosenNode]
+        here : Array(Int32) = @open[chosen_node]
 
         if here[0] == @destNode[0] && here[1] == @destNode[1]
           path = [@destNode]
           puts "\nWe\'re here! Final node at: (x: #{here[0].to_s}, y: #{here[1].to_s})"
           until here[2] == -1
-            here = @unvisited[here[2]]
+            here = @closed[here[2]]
             path.unshift(here)
           end
 
@@ -114,8 +114,8 @@ module CrystalMaze
           return path
         end
 
-        @visited.delete_at chosenNode
-        @unvisited << here
+        @open.delete_at chosen_node
+        @closed << here
 
         friendNodes = lookAround here
         0.upto friendNodes.size - 1 do |j|
@@ -123,36 +123,36 @@ module CrystalMaze
           verticalFriend   : Int32 = friendNodes[j][1]
 
           if passable?(horizontalFriend, verticalFriend) || (horizontalFriend == @destNode[0] && verticalFriend == @destNode[1])
-            onUnvisited = false
-            0.upto @unvisited.size - 1 do |k|
-              unvisitedNode = @unvisited[k]
-              if horizontalFriend == unvisitedNode[0] && verticalFriend == unvisitedNode[1]
-                onUnvisited = true
+            onclosed = false
+            0.upto @closed.size - 1 do |k|
+              closedNode = @closed[k]
+              if horizontalFriend == closedNode[0] && verticalFriend == closedNode[1]
+                onclosed = true
                 break
               end
             end
-            next if onUnvisited
+            next if onclosed
 
-            onVisited = false
-            0.upto @visited.size - 1 do |k|
-              visitedNode = @visited[k]
-              if horizontalFriend == visitedNode[0] && verticalFriend == visitedNode[1]
-                onVisited = true
+            on_open = false
+            0.upto @open.size - 1 do |k|
+              openNode = @open[k]
+              if horizontalFriend == openNode[0] && verticalFriend == openNode[1]
+                on_open = true
                 break
               end
             end
 
-            unless onVisited
-              newNode = node horizontalFriend, verticalFriend, @unvisited.size - 1, -1, -1, -1
-              newNode[3] = here[3] + cost(here, newNode)
-              newNode[4] = heuristic(newNode, @destNode).to_i
-              newNode[5] = newNode[3] + newNode[4]
+            unless on_open
+              new_node = node horizontalFriend, verticalFriend, @closed.size - 1, -1, -1, -1
+              new_node[3] = here[3] + cost(here, new_node)
+              new_node[4] = heuristic(new_node, @destNode).to_i
+              new_node[5] = new_node[3] + new_node[4]
 
-              @visited << newNode
+              @open << new_node
               #puts "!! New Node at\n(x: " + horizontalFriend.to_s + ", y: " + verticalFriend.to_s + ")"
               #puts "Destination = " + @destNode[0].to_s + ", " + @destNode[1].to_s
 
-              unless @hideNodes
+              unless @hide_nodes
                 @solvedMaze[horizontalFriend, verticalFriend] = RGBA.from_hex "#e2e2e2"
               end
             end
