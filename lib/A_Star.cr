@@ -2,12 +2,13 @@ require "stumpy_png"
 include StumpyPNG
 
 module CrystalMaze
+  GREY = 255 / 2
   class FromTo
     def self.findEnd(image : StumpyCore::Canvas)
       0.upto image.width - 1 do |i|
         red, green, blue = image[i, image.height - 1].to_rgb8
 
-        if red > 255/2 && green > 255/2 && blue > 255/2
+        if red > GREY && green > GREY && blue > GREY
           return [i, image.height - 1] of Int32
         end
       end
@@ -18,7 +19,7 @@ module CrystalMaze
       0.upto image.width - 1 do |i|
         red, green, blue = image[i, 0].to_rgb8
 
-        if red > 255/2 && green > 255/2 && blue > 255/2
+        if red > GREY && green > GREY && blue > GREY
           return [i, 0] of Int32
         end
       end
@@ -103,11 +104,11 @@ module CrystalMaze
           end
 
           hue = 0
-          hueCoeff = 360.0 / path.size # when * by path.size (the end of the arr) it would be 360, so one complete rainbow
+          hue_ratio = 360.0 / path.size # when * by path.size (the end of the arr) it would be 360, so one complete rainbow
 
           (1..path.size).each do |n|
             @solvedMaze[ path[n - 1][0], path[n - 1][1] ] = RGBA.from_hsl(hue, 100, 60)
-            hue = (hueCoeff * n).floor # Rainbow!
+            hue = (hue_ratio * n).floor # Rainbow!
           end
 
           return path
@@ -194,7 +195,7 @@ module CrystalMaze
         return false
       end
       red, green, blue = @maze[x, y].to_rgb8
-      if red > 255/2 && green > 255/2 && blue > 255/2
+      if red > GREY && green > GREY && blue > GREY
         return true
       end
       return false
