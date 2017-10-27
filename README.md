@@ -39,5 +39,8 @@ maze euclidean -v hipMaze.png --show-nodes
 ```
 
 ## Maze PNG requirements
-The start and end points of the maze must be from top to bottom. <br />
-It's highly recommended that the maze's walls and paths are 1 pixel wide as the program draws and reads the paths as one pixel.  
+The start and end points of the maze must be white and be from top or left to bottom or right, if this is not true, then it means the maze has a black border, in which case it will find the a green pixel (doesn't have to be perfect green) and sets that as the start point and the finds a red pixel (doesn't have to be perfect red) and sets that as the end point.
+
+---
+
+P.S. It's highly recommended that the maze's walls and paths are 1 pixel wide as the program draws and reads the paths as one pixel.  
