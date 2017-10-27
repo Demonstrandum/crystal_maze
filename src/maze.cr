@@ -1,4 +1,4 @@
-require "A_Star"
+require "./a_star"
 
 begin
   filepath : String = ""
@@ -14,34 +14,38 @@ rescue
   exit 1
 end
 
-distanceTypes : Array(String) = ["euclidean", "manhattan"]
-if (ARGV & distanceTypes).size == 0
+distance_types : Array(String) = ["euclidean", "manhattan"]
+if (ARGV & distance_types).size == 0
   puts "Distance type not specified, choosing default."
   distance = "manhattan"
 else
-  distance = (ARGV & distanceTypes).first
+  distance = (ARGV & distance_types).first
 end
 
 puts "Using distannce type: '#{distance}'."
 
 unless ARGV.includes? "--show-nodes"
-  hideNodes = true
+  hide_nodes? = true
   puts "Nodes will be hidden in the output image."
 else
-  hideNodes = false
+  hide_nodes? = false
   puts "Nodes will be visible in the output image."
 end
 
-begining, ending = CrystalMaze::FromTo.findStart(image), CrystalMaze::FromTo.findEnd(image)
+begining, ending = CrystalMaze::FromTo.find_start(image), CrystalMaze::FromTo.find_end(image)
 if begining.empty? || ending.empty?
   puts "Could not find start and/or finish! Exiting..."
   exit 1
 end
 
-CrystalMaze::AStar.new(
+maze = CrystalMaze::AStar.new(
   image,
   begining,
   ending,
-  hideNodes,
+  hide_nodes?,
   distance
-).draw
+)
+
+maze.draw
+puts "Maze solution image generated at #{maze.final_file}"
+
