@@ -4,6 +4,8 @@ TARGET = maze
 DEST = /usr/local/bin
 
 all:
+	@echo "Installing dependencies with Shards..."
+	shards install
 	@echo "Compiling $(TARGET).cr..."
 	$(COMP) $(FLAGS) -o $(TARGET) src/$(TARGET).cr
 
