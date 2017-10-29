@@ -43,6 +43,12 @@ You can animate the solving with the `--gif` argument, this looks better with `-
 ```shell
 maze mazes/50-maze.png --show-nodes --gif
 ```
+The gif will most likely be very slow, so you can drop some frames to speed it up:
+```shell
+maze mazes/normal.png --show-nodes --gif --gif-speed 14
+```
+The above means: only keep *every 14th* frame.
+
 which generates `mazes/50-maze-solved.gif`
 **Be careful**, when making GIFs with large mazes, the program will use *a lot* of memory and may freeze your computer!
 

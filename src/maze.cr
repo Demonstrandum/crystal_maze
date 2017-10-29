@@ -35,6 +35,9 @@ end
 gif = ARGV.includes? "--gif"
 puts "Output image will be a gif of solving process." if gif
 
+speed = 2
+speed = ARGV[ARGV.index("--gif-speed").as(Int32) + 1].to_i if ARGV.includes? "--gif-speed"
+
 begining, ending = CrystalMaze::FromTo.find_start(image), CrystalMaze::FromTo.find_end(image)
 if begining.empty? || ending.empty?
   puts "Could not find start and/or finish! Exiting..."
@@ -50,6 +53,6 @@ maze = CrystalMaze::AStar.new(
   gif: gif
 )
 
-maze.draw
+maze.draw gif_speed: speed
 puts "Maze solution image generated at #{maze.final_file}"
 

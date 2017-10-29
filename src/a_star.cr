@@ -91,7 +91,7 @@ module CrystalMaze
       @frames = [@maze] of StumpyCore::Canvas
     end
 
-    def draw
+    def draw(gif_speed=3)
       puts "Solving..."
 
       go = Time.new # Start the time
@@ -126,7 +126,18 @@ module CrystalMaze
       maze_filetype = ".gif" if @gif
       @final_file = "#{maze_label}-solved#{maze_filetype}"
       return StumpyPNG.write(@solved_maze, @final_file) unless @gif
-      return StumpyGIF.write(@frames, @final_file, delay_time=0)
+      frame_count = 0
+      puts "No. of frames before speed up: #{@frames.size}" if ARGV.includes? "-v"
+      @frames.select! { (frame_count += 1) % gif_speed == 0 }
+      puts "No. of frames after speed up:  #{@frames.size}" if ARGV.includes? "-v"
+      
+      if @gif
+        20.times do
+          @frames << @solved_maze
+        end
+        puts "Added 20 frames of the finally solved maze" if ARGV.includes? "-v"
+      end
+      return StumpyGIF.write(@frames, @final_file, delay_time=1)
     end
 
     private def solve
@@ -166,12 +177,6 @@ module CrystalMaze
             end
 
             hue = (hue_ratio * n).floor # Rainbow!
-          end
-
-          if @gif
-            15.times do
-              @frames << @solved_maze
-            end
           end
 
           return path
