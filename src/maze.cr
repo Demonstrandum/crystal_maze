@@ -32,6 +32,9 @@ else
   puts "Nodes will be visible in the output image."
 end
 
+gif = ARGV.includes? "--gif"
+puts "Output image will be a gif of solving process." if gif
+
 begining, ending = CrystalMaze::FromTo.find_start(image), CrystalMaze::FromTo.find_end(image)
 if begining.empty? || ending.empty?
   puts "Could not find start and/or finish! Exiting..."
@@ -39,11 +42,12 @@ if begining.empty? || ending.empty?
 end
 
 maze = CrystalMaze::AStar.new(
-  image,
-  begining,
-  ending,
-  hide_nodes?,
-  distance
+  canvas: image,
+  start_coord: begining,
+  end_coord: ending,
+  hide_nodes: hide_nodes?,
+  distance_type: distance,
+  gif: gif
 )
 
 maze.draw

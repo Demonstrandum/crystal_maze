@@ -1,5 +1,7 @@
 require "stumpy_png"
+require "stumpy_gif"
 include StumpyPNG
+include StumpyGIF
 
 module CrystalMaze
   GREY = 255 / 2
@@ -69,14 +71,15 @@ module CrystalMaze
 
   class AStar
     getter final_file : String = String.new
+    property solved_maze : StumpyCore::Canvas
 
-    def initialize(maze : StumpyCore::Canvas, start : Array(Int32), dest : Array(Int32), hide_nodes=true, distance_type="manhattan")
-      @maze  = maze
-      @start = start
-      @dest  = dest
-      @solved_maze = @maze
-      @origin_node  = [start[0], start[1], -1, -1, -1, -1] #[x, y, index, cost, heuristic, cost + heuristic]
-      @destination_node   = [dest[0],  dest[1],  -1, -1, -1, -1]
+    def initialize(canvas : StumpyCore::Canvas, start_coord : Array(Int32), end_coord : Array(Int32), @gif=false, hide_nodes=true, distance_type="manhattan")
+      @maze  = canvas
+      @start = start_coord
+      @dest  = end_coord
+      @solved_maze = @maze.dup
+      @origin_node  = [@start[0], @start[1], -1, -1, -1, -1] #[x, y, index, cost, heuristic, cost + heuristic]
+      @destination_node   = [@dest[0],  @dest[1],  -1, -1, -1, -1]
 
       @open    = [] of Array(Int32)
       @closed  = [] of Array(Int32)
@@ -84,6 +87,8 @@ module CrystalMaze
 
       @hide_nodes = hide_nodes
       @distance_type  = distance_type
+
+      @frames = [@maze] of StumpyCore::Canvas
     end
 
     def draw
@@ -118,8 +123,10 @@ module CrystalMaze
       maze_name : String = filepath.strip
       maze_label : String = maze_name.split(/()\s|\./)[0]
       maze_filetype : String = ".#{maze_name.split(/\s|\./)[1]}"
+      maze_filetype = ".gif" if @gif
       @final_file = "#{maze_label}-solved#{maze_filetype}"
-      StumpyPNG.write(@solved_maze, @final_file)
+      return StumpyPNG.write(@solved_maze, @final_file) unless @gif
+      return StumpyGIF.write(@frames, @final_file, delay_time=0)
     end
 
     private def solve
@@ -151,7 +158,20 @@ module CrystalMaze
 
           (1..path.size).each do |n|
             @solved_maze[ path[n - 1][0], path[n - 1][1] ] = RGBA.from_hsl(hue, 100, 60)
+            if @gif
+              @solved_maze = Canvas.new @maze.width, @maze.height do |x, y|
+                RGBA.from_rgb8(@solved_maze[x, y].to_rgb8)
+              end
+              @frames << @solved_maze
+            end
+
             hue = (hue_ratio * n).floor # Rainbow!
+          end
+
+          if @gif
+            15.times do
+              @frames << @solved_maze
+            end
           end
 
           return path
@@ -197,6 +217,13 @@ module CrystalMaze
 
               unless @hide_nodes
                 @solved_maze[horizontalFriend, verticalFriend] = RGBA.from_hex "#e2e2e2"
+                if @gif
+                  @solved_maze = Canvas.new @maze.width, @maze.height do |x, y|
+                    RGBA.from_rgb8(*@solved_maze[x, y].to_rgb8)
+                  end
+                  @frames << @solved_maze
+                end
+
               end
             end
           end

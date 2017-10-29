@@ -38,8 +38,16 @@ For example:
 maze euclidean -v hipMaze.png --show-nodes
 ```
 
+### GIFs
+You can animate the solving with the `--gif` argument, this looks better with `--show-nodes` as you can see the nodes being placed and spreading. e.g.
+```shell
+maze mazes/50-maze.png --show-nodes --gif
+```
+which generates `mazes/50-maze-solved.gif`
+**Be careful**, when making GIFs with large mazes, the program will use *a lot* of memory and may freeze your computer!
+
 ## Maze PNG requirements
-The start and end points of the maze must be white and be from top or left to bottom or right, if this is not true, then it means the maze has a black border, in which case it will find the a green pixel (doesn't have to be perfect green) and sets that as the start point and the finds a red pixel (doesn't have to be perfect red) and sets that as the end point.
+The start and end points of the maze must be white and be from top or left to bottom or right, if this is not true, then it means the maze has a black border, in which case it will find a green pixel (doesn't have to be perfect green) and sets that as the start point and then finds a red pixel (doesn't have to be perfect red) and sets that as the end point.
 
 ---
 
