@@ -40,7 +40,8 @@ maze euclidean -v hipMaze.png --show-nodes
 
 ### GIFs
 ![Maze being solved](mazes/200-solved.gif)
-> Maze being mapped out by flood and then solved with __A*__
+> Maze being mapped out by flood and then solved with ***A****
+
 You can animate the solving with the `--gif` argument, this looks better with `--show-nodes` as you can see the nodes being placed and spreading. e.g.
 ```shell
 maze mazes/50-maze.png --show-nodes --gif
